@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-import google.genai as genai
+from groq import Groq
 import json, os, csv
 from datetime import datetime, timezone
 from typing import List, Optional
@@ -10,11 +10,9 @@ import sys
 
 load_dotenv()
 
-genai.configure(
-    api_key=os.getenv("GEMINI_API_KEY")
+client = Groq(
+    api_key=os.getenv("GROQ_API_KEY")
 )
-
-model = genai.GenerativeModel("gemini-2.0-flash")
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app.database import init_db, insert_event, query
 
@@ -338,16 +336,20 @@ def ask(req: AskRequest):
     a = anomalies(store_id)
 
     context = {
-        "metrics": m,
-        "funnel": f,
-        "heatmap": h,
-        "anomalies": a
+
+        "metrics":m,
+
+        "funnel":f,
+
+        "heatmap":h,
+
+        "anomalies":a
     }
 
     prompt = f"""
 You are a senior retail analytics consultant.
 
-Use ONLY the provided store analytics.
+Use ONLY provided store analytics.
 
 Analytics:
 {json.dumps(context, indent=2)}
@@ -355,52 +357,136 @@ Analytics:
 Question:
 {req.question}
 
-Provide:
-1. concise answer
-2. supporting evidence
-3. business recommendation
+Provide MAX 120 words.
+
+Format:
+
+SUMMARY:
+(2 sentences)
+
+EVIDENCE:
+• bullet points
+
+ACTION:
+• 2 practical recommendations
+
+Be concise.
 """
 
     try:
 
-        resp = model.generate_content(prompt)
+        print(
+            "\n===== CALLING GROQ =====\n"
+        )
 
-        answer = resp.text
+        completion = (
 
-        source = "gemini"
+            client.chat.completions.create(
+
+                model=
+                "llama-3.3-70b-versatile",
+
+                messages=[
+
+                    {
+                        "role":"system",
+
+                        "content":
+                        "You are a retail analytics expert."
+                    },
+
+                    {
+                        "role":"user",
+
+                        "content":prompt
+                    }
+                ]
+            )
+        )
+
+        answer = (
+
+            completion
+            .choices[0]
+            .message
+            .content
+        )
+
+        source = "groq"
+
+        print(
+            "\n===== GROQ SUCCESS =====\n"
+        )
 
     except Exception as e:
+
+        print(
+            "\n===== GROQ ERROR ====="
+        )
+
+        print(type(e))
+
+        print(e)
+
+        print(
+            "=======================\n"
+        )
 
         insights = []
 
         if m["conversion_rate"] < 0.10:
+
             insights.append(
-                f"Conversion is low ({m['conversion_rate']*100:.1f}%)."
+
+                f"Conversion is low "
+                f"({m['conversion_rate']*100:.1f}%)."
             )
 
         if m["abandonment_rate"] > 0.30:
+
             insights.append(
-                f"Checkout abandonment is high ({m['abandonment_rate']*100:.1f}%)."
+
+                f"Checkout abandonment "
+                f"is high "
+                f"({m['abandonment_rate']*100:.1f}%)."
             )
 
         if any(
+
             x["anomaly_type"]=="CONVERSION_DROP"
+
             for x in a["anomalies"]
+
         ):
+
             insights.append(
-                "Significant funnel leakage detected before purchase."
+
+                "Significant funnel leakage "
+                "detected before purchase."
             )
 
-        answer = " ".join(insights)
+        answer = " ".join(
+
+            insights
+        )
 
         if not answer:
-            answer = "Store analytics appear stable."
+
+            answer = (
+
+                "Store analytics "
+                "appear stable."
+            )
 
         source = "fallback"
 
     return {
-        "question": req.question,
-        "answer": answer,
-        "source": source,
-        "timestamp": now()
+
+        "question":req.question,
+
+        "answer":answer,
+
+        "source":source,
+
+        "timestamp":now()
     }
