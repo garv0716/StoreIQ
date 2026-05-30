@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-import google.generativeai as genai
+import google.genai as genai
 import json, os, csv
 from datetime import datetime, timezone
 from typing import List, Optional
