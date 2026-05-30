@@ -1,0 +1,23 @@
+# Video files - too large for GitHub
+data/*.mp4
+*.mp4
+
+# Generated data
+data/events.db
+data/events.jsonl
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+
+# Model weights
+*.pt
+
+# Environment
+.env
+
+# Old files
+zone_visits.json

@@ -1,0 +1,71 @@
+{
+  "store_id": "STORE_BLR_002",
+  "store_name": "Apex Retail - Koramangala",
+  "city": "Bengaluru",
+  "open_hours": { "open": "10:00", "close": "22:00" },
+  
+"cameras": [
+  {
+    "camera_id":"CAM_ENTRY_01",
+    "type":"main_floor",
+    "file":"CAM 1.mp4"
+  },
+  {
+    "camera_id":"CAM_FLOOR_01",
+    "type":"main_floor",
+    "file":"CAM 2.mp4"
+  },
+  {
+    "camera_id":"CAM_ENTRY_02",
+    "type":"entry",
+    "file":"CAM 3.mp4"
+  },
+  {
+    "camera_id":"CAM_BACKROOM_01",
+    "type":"backroom",
+    "file":"CAM 4.mp4"
+  },
+  {
+    "camera_id":"CAM_BILLING_01",
+    "type":"billing",
+    "file":"CAM 5.mp4"
+  }
+],
+  "zones":[
+  {
+    "zone_id":"ENTRY_EXIT",
+    "sku_zone":null,
+    "camera_ids":["CAM_ENTRY_02"]
+  },
+  {
+    "zone_id":"SKINCARE",
+    "sku_zone":"MOISTURISER",
+    "camera_ids":["CAM_ENTRY_01"]
+  },
+  {
+    "zone_id":"COSMETICS",
+    "sku_zone":"FOUNDATION",
+    "camera_ids":["CAM_FLOOR_01"]
+  },
+  {
+    "zone_id":"HAIRCARE",
+    "sku_zone":"SHAMPOO",
+    "camera_ids":["CAM_FLOOR_01"]
+  },
+  {
+    "zone_id":"FRAGRANCE",
+    "sku_zone":"PERFUME",
+    "camera_ids":["CAM_FLOOR_01"]
+  },
+  {
+    "zone_id":"BILLING",
+    "sku_zone":null,
+    "camera_ids":["CAM_BILLING_01"]
+  },
+  {
+    "zone_id":"BACKROOM",
+    "sku_zone":null,
+    "camera_ids":["CAM_BACKROOM_01"]
+  }
+]
+}

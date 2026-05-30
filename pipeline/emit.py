@@ -1,0 +1,54 @@
+import uuid, json, hashlib
+from datetime import datetime, timezone
+from kafka import KafkaProducer
+
+STORE_ID = "STORE_BLR_002"
+_producer = None
+
+def get_producer():
+    global _producer
+    if _producer is None:
+        try:
+            _producer = KafkaProducer(
+                bootstrap_servers='localhost:9092',
+                value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+                acks='all', retries=3
+            )
+        except Exception as e:
+            print(f"Kafka unavailable: {e}")
+    return _producer
+
+def make_visitor_id(track_id: int, camera_id: str) -> str:
+    h = hashlib.md5(f"{camera_id}_{track_id}".encode()).hexdigest()[:6]
+    return f"VIS_{h}"
+
+def make_event(camera_id, visitor_id, event_type, zone_id, dwell_ms,
+               is_staff, confidence, frame_timestamp, session_seq,
+               queue_depth=None, sku_zone=None):
+    return {
+        "event_id":   str(uuid.uuid4()),
+        "store_id":   STORE_ID,
+        "camera_id":  camera_id,
+        "visitor_id": visitor_id,
+        "event_type": event_type,
+        "timestamp":  frame_timestamp,
+        "zone_id":    zone_id,
+        "dwell_ms":   dwell_ms,
+        "is_staff":   is_staff,
+        "confidence": round(float(confidence), 4),
+        "metadata":   {"queue_depth": queue_depth, "sku_zone": sku_zone, "session_seq": session_seq}
+    }
+
+def emit(event: dict, topic: str = "store_events") -> dict:
+    p = get_producer()
+    if p:
+        try: p.send(topic, value=event)
+        except Exception as e: print(f"Kafka send failed: {e}")
+    print(f"  [{event['event_type']:22s}] {event['visitor_id']} | zone={str(event['zone_id']):15s} | staff={event['is_staff']}")
+    return event
+
+def flush():
+    p = get_producer()
+    if p:
+        try: p.flush()
+        except: pass
