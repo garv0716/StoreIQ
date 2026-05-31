@@ -22,12 +22,43 @@ ZONE_BY_ID = {z["zone_id"]: z for z in LAYOUT["zones"]}
 model = YOLO("yolov8n.pt")
 
 def get_zone(cx, cy, width, height, cam_type, cam_id):
-    if cam_type == "billing":   return "BILLING", None
-    if cam_type == "entry":     return "ENTRY_EXIT", None
+
+    if cam_type == "billing":
+        return "BILLING", None
+
+    if cam_type == "entry":
+        return "ENTRY_EXIT", None
+
+    if cam_type == "backroom":
+        return "BACKROOM", None
+
     if cam_type == "main_floor":
-        z = ("SKINCARE" if cx < width//2 else "COSMETICS") if cam_id == "CAM_FLOOR_01" \
-            else ("HAIRCARE" if cx < width//2 else "FRAGRANCE")
-        return z, ZONE_BY_ID.get(z, {}).get("sku_zone")
+
+        z = (
+
+            "SKINCARE"
+
+            if cx < width//2
+
+            else "COSMETICS"
+
+        ) if cam_id=="CAM_FLOOR_01" else (
+
+            "HAIRCARE"
+
+            if cx < width//2
+
+            else "FRAGRANCE"
+
+        )
+
+        return z, ZONE_BY_ID.get(
+            z,
+            {}
+        ).get(
+            "sku_zone"
+        )
+
     return "UNKNOWN", None
 
 def ts(frame_num, fps, base):
