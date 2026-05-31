@@ -128,6 +128,21 @@ async function updateAlerts(){
 }
 
 
+async function updateSecurity(){
+
+    const security =
+        await fetch(
+            `${API}/security`
+        ).then(r=>r.json());
+
+
+
+    document.getElementById(
+        "securityStatus"
+    ).innerText =
+        security.backroom_status;
+}
+
 
 
 
@@ -277,11 +292,12 @@ async function init(){
     await updateMetrics();
     await updateFunnel();
     await updateAlerts();
+    await updateSecurity();
     await updateChart();
+
     updateClock();
 
 }
-
 
 
 init();
@@ -293,7 +309,9 @@ setInterval(()=>{
     updateMetrics();
     updateFunnel();
     updateAlerts();
+    updateSecurity();
     updateChart();
+
     updateClock();
 
 },5000);
