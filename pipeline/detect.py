@@ -9,6 +9,7 @@ import cv2
 from datetime import datetime, timezone, timedelta
 from ultralytics import YOLO
 from pipeline.emit import make_visitor_id, make_event, emit, flush, STORE_ID
+from pipeline.reid import assign_global_id
 
 LAYOUT_PATH     = "data/store_layout.json"
 EVENTS_OUT      = "data/events.jsonl"
@@ -114,6 +115,7 @@ def process_camera(cam_file, cam_info, all_events, hour_offset=0):
                 conf = float(box.conf[0])
                 if conf < 0.4: continue
                 x1,y1,x2,y2 = map(int, box.xyxy[0])
+                global_vid = assign_global_id(frame, x1,y1,x2,y2,now)
                 cx,cy = (x1+x2)//2, (y1+y2)//2
                 active.add(tid)
                 frame_counts[tid] = frame_counts.get(tid,0)+1

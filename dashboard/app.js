@@ -137,10 +137,26 @@ async function updateSecurity(){
 
 
 
+    const el =
     document.getElementById(
         "securityStatus"
-    ).innerText =
-        security.backroom_status;
+    );
+
+el.innerText =
+    security.backroom_status;
+
+if(
+    security.personnel_count===0
+){
+
+    el.style.color="#22c55e";
+
+}
+else{
+
+    el.style.color="#ef4444";
+
+}
 }
 
 

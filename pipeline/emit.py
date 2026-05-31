@@ -19,9 +19,30 @@ def get_producer():
     return _producer
 
 def make_visitor_id(track_id: int, camera_id: str) -> str:
-    h = hashlib.md5(f"{camera_id}_{track_id}".encode()).hexdigest()[:6]
-    return f"VIS_{h}"
 
+    CAMERA_GROUPS = {
+
+        "CAM_ENTRY_01":"STORE_FLOW",
+
+        "CAM_ENTRY_02":"STORE_FLOW",
+
+        "CAM_FLOOR_01":"STORE_FLOW",
+
+        "CAM_BILLING_01":"STORE_FLOW",
+
+        "CAM_BACKROOM_01":"SECURITY"
+    }
+
+    group = CAMERA_GROUPS.get(
+        camera_id,
+        camera_id
+    )
+
+    h = hashlib.md5(
+        f"{group}_{track_id}".encode()
+    ).hexdigest()[:6]
+
+    return f"VIS_{h}"
 def make_event(camera_id, visitor_id, event_type, zone_id, dwell_ms,
                is_staff, confidence, frame_timestamp, session_seq,
                queue_depth=None, sku_zone=None):
