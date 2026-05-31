@@ -317,8 +317,7 @@ def anomalies(store_id: str):
         "timestamp": now()
     }
 
-class AskRequest(BaseModel):
-    question: str
+
 
 
 class AskRequest(BaseModel):
@@ -480,6 +479,9 @@ Be concise.
 
         source = "fallback"
 
+    
+
+
     return {
 
         "question":req.question,
@@ -489,4 +491,64 @@ Be concise.
         "source":source,
 
         "timestamp":now()
+    }
+
+
+@app.get("/security")
+
+def security():
+
+    import json
+    import os
+
+    path = "data/events.jsonl"
+
+    if not os.path.exists(path):
+
+        return {
+
+            "status":"ERROR",
+
+            "message":"events missing"
+
+        }
+
+    backroom_visitors = set()
+
+    with open(path) as f:
+
+        for line in f:
+
+            ev = json.loads(line)
+
+            if ev["camera_id"] == "CAM_BACKROOM_01":
+
+                backroom_visitors.add(
+                    ev["visitor_id"]
+                )
+
+    if len(backroom_visitors)==0:
+
+        return {
+
+            "status":"OK",
+
+            "backroom_status":
+            "No personnel activity detected.",
+
+            "personnel_count":0
+        }
+
+    return {
+
+        "status":"OK",
+
+        "backroom_status":
+        "Personnel detected",
+
+        "personnel_count":
+        len(backroom_visitors),
+
+        "visitors":
+        list(backroom_visitors)
     }
