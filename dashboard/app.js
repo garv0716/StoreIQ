@@ -7,38 +7,118 @@ let chart=null;
 
 async function updateMetrics(){
 
-    const metrics=
-        await fetch(
-            `${API}/stores/${STORE}/metrics`
-        ).then(r=>r.json());
+    const metrics =
+    await fetch(
+        `${API}/stores/${STORE}/metrics`
+    ).then(r=>r.json());
+
+    const pos =
+    await fetch(
+        `${API}/real-pos`)
+    .then(r=>r.json());
+
+    const cross =
+    await fetch(
+        `${API}/cross-camera`
+    ).then(r=>r.json());
+
+    const security =
+    await fetch(
+        `${API}/security`
+    ).then(r=>r.json());
+
+    const realPos =
+    await fetch(
+        `${API}/real-pos`
+    ).then(r=>r.json());
+
+
+
+    console.log(
+        "CROSS DATA:",
+        cross
+    );
+
+
+
+    document.getElementById(
+        "crossCamera"
+    ).innerText =
+        cross.stitched_visitors;
 
 
 
     document.getElementById(
         "visitors"
-    ).innerText=
+    ).innerText =
         metrics.unique_visitors;
 
 
 
     document.getElementById(
         "conversion"
-    ).innerText=
-        (metrics.conversion_rate*100).toFixed(1)+"%";
+    ).innerText =
+        (metrics.conversion_rate*100)
+        .toFixed(1)+"%";
 
 
 
     document.getElementById(
         "transactions"
-    ).innerText=
+    ).innerText =
         metrics.pos_transactions;
 
 
 
     document.getElementById(
+        "revenue"
+    ).innerText =
+        "₹" +
+        pos.total_revenue
+        .toLocaleString();
+
+
+
+    document.getElementById(
         "abandonment"
-    ).innerText=
-        (metrics.abandonment_rate*100).toFixed(1)+"%";
+    ).innerText =
+        (metrics.abandonment_rate*100)
+        .toFixed(1)+"%";
+
+
+
+    document.getElementById(
+        "securityStatus"
+    ).innerText =
+        security.backroom_status;
+
+
+
+    document.getElementById(
+        "realPos"
+    ).innerHTML = `
+
+        <p>
+            <b>Total Revenue:</b>
+            ₹${realPos.total_revenue.toFixed(2)}
+        </p>
+
+        <p>
+            <b>Top Brand:</b>
+            ${Object.keys(realPos.top_brands)[0]}
+        </p>
+
+        <p>
+            <b>Top Category:</b>
+            ${Object.keys(realPos.top_categories)[0]}
+        </p>
+
+        <p>
+            <b>Top Salesperson:</b>
+            ${Object.keys(realPos.top_salespeople)[0]}
+        </p>
+
+    `;
 
 
 
@@ -190,45 +270,77 @@ async function updateChart(){
 
 
 
-    chart=
-        new Chart(
+    chart = new Chart(
+    document.getElementById("dwellChart"),
+    {
+        type:"bar",
 
-            document.getElementById(
-                "dwellChart"
-            ),
+        data:{
+            labels,
 
-            {
+            datasets:[{
+                label:"Avg Dwell",
 
-                type:"bar",
+                data:values,
 
-                data:{
+                backgroundColor:[
+                    "#22c55e",
+                    "#3b82f6",
+                    "#f59e0b",
+                    "#ef4444",
+                    "#8b5cf6",
+                    "#14b8a6"
+                ],
 
-                    labels,
+                borderRadius:8,
+                borderSkipped:false
+            }]
+        },
 
-                    datasets:[{
+        options:{
 
-                        label:"Avg Dwell",
+            responsive:true,
 
-                        data:values,
+            maintainAspectRatio:false,
 
-                        backgroundColor:[
-                            "#22c55e",
-                            "#3b82f6",
-                            "#f59e0b",
-                            "#ef4444",
-                            "#8b5cf6",
-                            "#14b8a6"
-                        ]
-                    }]
+            plugins:{
+                legend:{
+                    labels:{
+                        color:"#cbd5e1"
+                    }
+                }
+            },
+
+            scales:{
+
+                x:{
+                    ticks:{
+                        color:"#94a3b8"
+                    },
+
+                    grid:{
+                        display:false
+                    }
+                },
+
+                y:{
+                    ticks:{
+                        color:"#94a3b8"
+                    },
+
+                    grid:{
+                        color:"rgba(255,255,255,.06)"
+                    },
+
+                    beginAtZero:true
                 }
             }
-        );
+        }
+    }
+);
+
+
 }
-
-
-
-
-
 async function askAI(){
 
     const input=
@@ -310,6 +422,7 @@ async function init(){
     await updateAlerts();
     await updateSecurity();
     await updateChart();
+    await updateRealPos();
 
     updateClock();
 
@@ -327,7 +440,54 @@ setInterval(()=>{
     updateAlerts();
     updateSecurity();
     updateChart();
+    updateRealPos();
 
     updateClock();
 
 },5000);
+
+
+async function updateRealPos(){
+
+    const pos =
+        await fetch(
+            `${API}/real-pos`
+        ).then(r=>r.json());
+
+    document.getElementById(
+        "realPos"
+    ).innerHTML = `
+
+        <p>
+        <b>Total Revenue:</b>
+        ₹${Math.round(pos.total_revenue).toLocaleString()}
+        </p>
+
+        <p>
+        <b>Top Brand:</b>
+        ${
+            Object.keys(
+                pos.top_brands
+            )[0]
+        }
+        </p>
+
+        <p>
+        <b>Top Category:</b>
+        ${
+            Object.keys(
+                pos.top_categories
+            )[0]
+        }
+        </p>
+
+        <p>
+        <b>Top Salesperson:</b>
+        ${
+            Object.keys(
+                pos.top_salespeople
+            )[0]
+        }
+        </p>
+    `;
+}
