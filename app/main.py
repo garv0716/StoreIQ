@@ -6,6 +6,8 @@ from typing import List, Optional
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from pipeline.pos_insights import pos_summary
+from pipeline.real_pos import pos_analytics
 import sys
 
 load_dotenv()
@@ -552,3 +554,59 @@ def security():
         "visitors":
         list(backroom_visitors)
     }
+
+@app.get("/pos-insights")
+
+def pos_insights():
+
+    return pos_summary()
+
+
+@app.get("/cross-camera")
+
+def cross_camera():
+
+    import json
+    from collections import defaultdict
+
+    cams = defaultdict(set)
+
+    with open("data/events.jsonl") as f:
+
+        for line in f:
+
+            ev = json.loads(line)
+
+            cams[
+                ev["visitor_id"]
+            ].add(
+                ev["camera_id"]
+            )
+
+    stitched=[]
+
+    for vid,c in cams.items():
+
+        if len(c)>1:
+
+            stitched.append({
+
+                "visitor_id":vid,
+
+                "cameras":list(c)
+            })
+
+    return {
+
+        "stitched_visitors":
+        len(stitched),
+
+        "examples":
+        stitched[:10]
+    }
+
+@app.get("/real-pos")
+
+def real_pos():
+
+    return pos_analytics()
