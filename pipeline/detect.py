@@ -124,13 +124,23 @@ def process_camera(cam_file, cam_info, all_events, hour_offset=0):
 
                 if tid not in persons:
                     p = Person(tid, cam_id)
+                    p.visitor_id = global_vid
                     persons[tid] = p
                     etype = "REENTRY" if p.visitor_id in exited_ids else "ENTRY"
                     p.session_seq += 1
-                    ev = make_event(cam_id, p.visitor_id, etype,
+                    ev = make_event(
+                        cam_id,
+                        p.visitor_id,
+                        etype,
                         "ENTRY_EXIT" if cam_type=="entry" else zone_id,
-                        0, False, conf, now, p.session_seq)
-                    emit(ev); cam_events.append(ev)
+                        0,
+                        False,
+                        conf,
+                        now,
+                        p.session_seq
+                    )
+                    emit(ev)
+                    cam_events.append(ev)
 
                 p = persons[tid]
                 p.frames_seen += 1
