@@ -5,9 +5,7 @@
 
     <meta charset="UTF-8">
 
-    <title>
-        Store Intelligence Dashboard
-    </title>
+    <title>Store Intelligence Dashboard</title>
 
     <link rel="stylesheet" href="styles.css">
 
@@ -47,13 +45,9 @@
 
             <p id="visitors">--</p>
 
-            <small>
-                Unique shoppers detected
-            </small>
+            <small>Unique shoppers detected</small>
 
         </div>
-
-
 
         <div class="card">
 
@@ -61,13 +55,9 @@
 
             <p id="conversion">--</p>
 
-            <small>
-                Visitor → Purchase rate
-            </small>
+            <small>Visitor → Purchase rate</small>
 
         </div>
-
-
 
         <div class="card">
 
@@ -75,13 +65,29 @@
 
             <p id="transactions">--</p>
 
-            <small>
-                Completed POS sales
-            </small>
+            <small>Completed POS sales</small>
 
         </div>
 
+        <div class="card">
 
+            <h3>Cross-Camera</h3>
+
+            <p id="crossCamera">--</p>
+
+            <small>Stitched shopper identities</small>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Revenue</h3>
+
+            <p id="revenue">--</p>
+
+            <small>POS Revenue Today</small>
+
+        </div>
 
         <div class="card">
 
@@ -89,9 +95,7 @@
 
             <p id="abandonment">--</p>
 
-            <small>
-                Queue exits before checkout
-            </small>
+            <small>Queue exits before checkout</small>
 
         </div>
 
@@ -111,35 +115,24 @@
 
         </div>
 
-
-
         <div class="panel">
 
             <h2>System Status</h2>
 
             <div id="systemStatus">
 
-                <p>
-                    Events Processed: 4271
-                </p>
+                <p>Events Processed: 4271</p>
 
-                <p>
-                    Cameras Active: 5
-                </p>
+                <p>Cameras Active: 5</p>
 
                 <p>
                     API Status:
-                    <span class="green">
-                        Healthy
-                    </span>
+                    <span class="green">Healthy</span>
                 </p>
 
                 <p>
                     Security Status:
-                    <span
-                        id="securityStatus"
-                        class="green"
-                    >
+                    <span id="securityStatus" class="green">
                         Loading...
                     </span>
                 </p>
@@ -152,7 +145,23 @@
 
 
 
-    <!-- CHART + ALERTS -->
+    <!-- REAL POS -->
+
+    <div class="panel">
+
+        <h2>Real POS Intelligence</h2>
+
+        <div id="realPos">
+
+            Loading...
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ANALYTICS -->
 
     <div class="grid">
 
@@ -164,16 +173,6 @@
 
         </div>
 
-
-
-        <div class="panel">
-
-            <h2>Active Alerts</h2>
-
-            <div id="alerts"></div>
-
-        </div>
-
     </div>
 
 
@@ -182,9 +181,7 @@
 
     <div class="ai-card">
 
-        <h2>
-            AI Retail Copilot
-        </h2>
+        <h2>AI Retail Copilot</h2>
 
         <div class="chat-input">
 
@@ -203,8 +200,6 @@
 
         </div>
 
-
-
         <div
             id="answer"
             class="answer-box"
@@ -215,8 +210,6 @@
         </div>
 
     </div>
-
-
 
     <script src="app.js"></script>
 
