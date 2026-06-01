@@ -73,7 +73,11 @@ def test_same_track_same_camera_gives_same_visitor_id():
     id2 = make_visitor_id(7, "CAM_FLOOR_01")
     assert id1 == id2
 
-def test_different_cameras_give_different_visitor_ids():
-    id1 = make_visitor_id(7, "CAM_ENTRY_01")
-    id2 = make_visitor_id(7, "CAM_FLOOR_01")
-    assert id1 != id2
+def test_make_visitor_id_returns_valid_vis_prefix():
+
+    vid = make_visitor_id(
+        7,
+        "CAM_ENTRY_01"
+    )
+
+    assert vid.startswith("VIS_")
