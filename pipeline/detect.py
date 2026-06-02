@@ -115,7 +115,7 @@ def process_camera(cam_file, cam_info, all_events, hour_offset=0):
                 conf = float(box.conf[0])
                 if conf < 0.4: continue
                 x1,y1,x2,y2 = map(int, box.xyxy[0])
-                global_vid = assign_global_id(frame, x1,y1,x2,y2,now)
+                global_vid = assign_global_id(frame,x1,y1,x2,y2,now,camera_id=cam_id)
                 cx,cy = (x1+x2)//2, (y1+y2)//2
                 active.add(tid)
                 frame_counts[tid] = frame_counts.get(tid,0)+1
@@ -224,3 +224,12 @@ if __name__ == "__main__":
     print(f"Total events : {len(all_events)}")
     print(f"Output file  : {EVENTS_OUT}")
     print(f"{'='*55}")
+
+
+print(
+    "\nUNIQUE GLOBAL VISITORS:",
+    len(set(
+        e["visitor_id"]
+        for e in all_events
+    ))
+)
