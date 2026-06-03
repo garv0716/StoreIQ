@@ -206,8 +206,6 @@ Purchase         20
 
 ```text
 store-intelligence/
-├── docker-compose.yml
-├── README.md
 │
 ├── app/
 │   ├── __init__.py
@@ -243,10 +241,13 @@ store-intelligence/
 │   ├── DESIGN.md
 │   └── CHOICES.md
 │
-└── tests/
-    ├── test_pipeline.py
-    ├── test_metrics.py
-    └── test_anomalies.py
+└── tests/    
+│    ├── test_pipeline.py
+│    ├── test_metrics.py
+│    └── test_anomalies.py
+│
+├── README.md
+├── docker-compose.yml
 
 ```
 
