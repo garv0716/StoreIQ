@@ -52,8 +52,9 @@ SQLite Event Store
 FastAPI Analytics API
       ↓
 Dashboard + AI Retail Copilot
-
 ```
+
+The dashboard consumes API responses and refreshes automatically to provide near real-time visibility into store performance, visitor behavior, and operational anomalies.
 
 ### The Two Main Subsystems
 
@@ -75,7 +76,7 @@ YOLOv8n processes the incoming camera streams frame by frame.
 
 ByteTrack maintains persistent track identities across frames, enabling accurate dwell-time calculations within a single camera's view.
 
-### Step 3: Identity Stitching (Cross-Camera ReID)
+### Step 3: Identity Stitching (Lightweight Cross-Camera ReID)
 
 Normally, ReID requires heavy, GPU-intensive deep learning models (like OSNet). Our system performs lightweight cross-camera identity stitching to preserve CPU deployment feasibility using:
 
@@ -96,11 +97,15 @@ Once an event is generated, it flows into the backend architecture. To calculate
 
 ### Core API Endpoints
 
-* **`GET /health`** - System health and STALE_FEED status
-* **`POST /events/ingest`** - Idempotent batch event ingestion
-* **`GET /stores/{id}/funnel`** - Entry → Purchase funnel metrics
-* **`GET /stores/{id}/anomalies`** - Operational anomalies
-* **`POST /ask`** - AI Retail Copilot
+* **GET /health** - System health and STALE_FEED monitoring
+* **POST /events/ingest** - Idempotent batch event ingestion
+* **GET /stores/{id}/metrics** - Visitor, conversion and dwell analytics
+* **GET /stores/{id}/funnel** - Entry → Purchase funnel metrics
+* **GET /stores/{id}/anomalies** - Operational anomaly detection
+* **GET /real-pos** - Revenue, brands, categories and salesperson insights
+* **GET /cross-camera** - Cross-camera visitor stitching examples
+* **GET /security** - Security monitoring analytics
+* **POST /ask** - AI Retail Copilot
 
 ### Anomalies & AI Copilot
 
@@ -122,15 +127,26 @@ Once an event is generated, it flows into the backend architecture. To calculate
 ### Option 1 — Docker (Recommended)
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/garv0716/store-intelligence.git
 cd store-intelligence
 docker compose up --build
-
 ```
 
+Verified locally using:
+
+```bash
+docker compose up --build
+```
+
+- Health endpoint returns HTTP 200.
+- Analytics endpoints load successfully.
+- Dashboard loads and refreshes automatically.
+
 This single command spins up the FastAPI backend, SQLite analytics layer, and Redpanda broker.
-*Health Check:* `curl http://localhost:8000/health`
-*Swagger Docs:* `http://localhost:8000/docs`
+
+**Health Check:** `curl http://localhost:8000/health`
+
+**Swagger Docs:** `http://localhost:8000/docs`
 
 ### Option 2 — Manual Setup
 
