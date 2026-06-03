@@ -206,40 +206,47 @@ Purchase         20
 
 ```text
 store-intelligence/
-├── docker-compose.yml     # Docker orchestration (Starts API, DB, Redpanda)
-├── requirements.txt       # Python dependencies
-├── README.md              # This documentation
+├── docker-compose.yml
+├── README.md
 │
-├── app/                   # Backend API (FastAPI)
-│   ├── main.py            # API Endpoints & Routes
-│   └── database.py        # SQLite connections and schemas
+├── app/
+│   ├── __init__.py
+│   ├── main.py
+│   └── database.py
 │
-├── pipeline/              # Computer Vision Layer
-│   ├── detect.py          # Main pipeline orchestrator
-│   ├── detector.py        # YOLOv8n detection + ByteTrack
-│   ├── reid.py            # Cross-camera visitor stitching
-│   ├── emit.py            # Event schema generation
-│   ├── ingest_events.py   # Event ingestion utility
-│   └── real_pos.py        # Revenue & POS insights
+├── pipeline/
+│   ├── __init__.py
+│   ├── detect.py
+│   ├── detector.py
+│   ├── reid.py
+│   ├── emit.py
+│   ├── ingest_events.py
+│   ├── producer.py
+│   ├── pos_insights.py
+│   ├── real_pos.py
+│   ├── security_monitor.py
+│   ├── zones.py
+│   └── run.sh
 │
-├── data/                  # Inputs/Outputs
-│   ├── CCTV videos        # Raw mp4 inputs
-│   ├── store_layout.json  # Zone definitions
-│   ├── events.jsonl       # Pipeline output
-│   └── pos_transactions   # POS correlation data
+├── data/
+│   ├── Brigade_Bangalore_10_April_26.mp4
+│   ├── store_layout.json
+│   ├── pos_transactions.csv
+│   └── events.jsonl (generated)
 │
-├── tests/                 # Comprehensive Pytest Suite
-│   ├── test_pipeline.py
-│   ├── test_metrics.py
-│   └── test_anomalies.py
+├── dashboard/
+│   ├── index.html
+│   ├── app.js
+│   └── styles.css
 │
-├── docs/                  # Architecture info
+├── docs/
 │   ├── DESIGN.md
 │   └── CHOICES.md
 │
-└── dashboard/             # Frontend UI
-    ├── index.html         # Analytics UI
-    └── app.js             # UI logic and API fetching
+└── tests/
+    ├── test_pipeline.py
+    ├── test_metrics.py
+    └── test_anomalies.py
 
 ```
 
