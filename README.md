@@ -20,6 +20,18 @@ Built for **Purplle Tech Challenge 2026 — Round 2**
 
 ---
 
+# Store Intelligence
+
+## Live Demo
+
+### Frontend
+https://garv0716.github.io/store-intelligence/
+
+### Backend API
+https://store-intelligence-q9yn.onrender.com/docs
+
+
+
 ## 1. What is Store Intelligence?
 
 Retail stores generate massive amounts of video data but extract very little actionable insight. Store managers often cannot answer basic questions about footfall, conversion drops, or underutilized zones.
@@ -240,24 +252,23 @@ store-intelligence/
 │   ├── Brigade_Bangalore_10_April_26.mp4
 │   ├── store_layout.json
 │   ├── pos_transactions.csv
-│   └── events.jsonl (generated)
-│
-├── dashboard/
-│   ├── index.html
-│   ├── app.js
-│   └── styles.css
+│   └── events.jsonl
 │
 ├── docs/
 │   ├── DESIGN.md
 │   └── CHOICES.md
 │
-└── tests/    
-│    ├── test_pipeline.py
-│    ├── test_metrics.py
-│    └── test_anomalies.py
+├── tests/
+│   ├── test_pipeline.py
+│   ├── test_metrics.py
+│   └── test_anomalies.py
 │
-├── README.md
+├── app.js
 ├── docker-compose.yml
+├── index.html
+├── README.md
+├── requirements.txt
+└── style.css
 
 ```
 
