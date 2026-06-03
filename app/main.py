@@ -610,3 +610,12 @@ def cross_camera():
 def real_pos():
 
     return pos_analytics()
+
+
+@app.get("/")
+def root():
+    return {
+        "project": "Store Intelligence System",
+        "status": "running",
+        "docs": "/docs"
+    }
