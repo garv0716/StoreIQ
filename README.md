@@ -1,5 +1,5 @@
 ```md
-# Store Intelligence System
+# Store Intelligence System - Retail Analytics Platform
 
 AI-powered retail analytics platform that converts CCTV footage into actionable business intelligence.
 
@@ -7,87 +7,45 @@ Built for **Purplle Tech Challenge 2026 — Round 2**
 
 ---
 
-# Problem Statement
+## Table of Contents
 
-Retail stores generate large amounts of video data but very little actionable insight.
-
-Store managers often cannot answer questions such as:
-
-* Which zones attract the most shoppers?
-* Where are customers dropping off before purchase?
-* How many visitors actually convert?
-* Which areas of the store are underutilized?
-* Are billing queues causing abandonment?
-* What is the relationship between footfall and revenue?
-
-This project transforms raw CCTV footage into structured retail intelligence.
+1. [What is Store Intelligence?](#1-what-is-store-intelligence)
+2. [Project Overview](#2-project-overview)
+3. [The Analytics Pipeline](#3-the-analytics-pipeline)
+4. [API Endpoints & Features](#4-api-endpoints--features)
+5. [Engineering Decisions](#5-engineering-decisions)
+6. [Building and Running](#6-building-and-running)
+7. [Understanding the Output](#7-understanding-the-output)
+8. [Project Structure](#8-project-structure)
 
 ---
 
-# Key Features
-s
-### Multi-Camera Visitor Tracking
+## 1. What is Store Intelligence?
 
-* YOLOv8n person detection
-* ByteTrack persistent tracking
-* Cross-camera identity stitching
-* Visitor journey reconstruction
+Retail stores generate massive amounts of video data but extract very little actionable insight. Store managers often cannot answer basic questions about footfall, conversion drops, or underutilized zones.
 
-### Retail Analytics
+**Store Intelligence** is an AI-powered system that uses computer vision to examine store visitors exactly like web analytics examines website visitors.
 
-* Unique visitors
-* Conversion rate
-* Zone dwell time
-* Billing queue analysis
-* Funnel analytics
-* Heatmap generation
-
-### Real POS Integration
-
-Uses actual Brigade Road store transactions to calculate:
-
-* Revenue
-* Top brands
-* Top categories
-* Top salespeople
-
-### Anomaly Detection
-
-Detects:
-
-* DEAD_ZONE
-* QUEUE_SPIKE
-* HIGH_ABANDONMENT
-* CONVERSION_DROP
-* STALE_FEED
-
-### AI Retail Copilot
-
-Ask business questions in natural language:
-
-```text
-Why is conversion rate low?
-
-Which zone has highest engagement?
-
-Summarize today's performance.
-
-```
-
-Powered by Groq LLM. If the LLM is unavailable, a deterministic rule-based fallback automatically activates to avoid failed responses.
+### Real-World Uses:
+* **Store Managers:** Understand which zones (e.g., Cosmetics, Fragrances) attract the most shoppers.
+* **Operations:** Detect if billing queues are causing checkout abandonment.
+* **Sales Strategy:** Calculate exactly how many visitors actually convert to buyers.
+* **Layout Optimization:** Identify "dead zones" where customers rarely go.
 
 ---
 
-# System Architecture
+## 2. Project Overview
+
+### Architecture Flow
 
 ```text
-CCTV Cameras
+Retail CCTV Footage (.mp4)
       ↓
 YOLOv8n + ByteTrack
       ↓
-Lightweight Cross-Camera ReID
+Cross-Camera ReID
       ↓
-Structured Event Generation
+Event Generation
       ↓
 SQLite Event Store
       ↓
@@ -97,137 +55,126 @@ Dashboard + AI Retail Copilot
 
 ```
 
-### Dashboard Architecture
+### The Two Main Subsystems
 
-The dashboard is API-driven and continuously refreshes live analytics.
-
-```text
-dashboard/index.html
-        ↓
-dashboard/app.js
-        ↓
-HTTP fetch()
-FastAPI API
-        ↓
-SQLite + POS Analytics
-        ↓
-JSON responses
-        ↓
-DOM updates + Chart.js rendering
-
-```
-
-Dashboard refreshes every 5 seconds using frontend polling.
-
----
-
-# Detection Pipeline
-
-## Step 1 — Person Detection
-
-YOLOv8n processes all camera streams and detects people.
-
-Output:
-
-```text
-Bounding Box
-Confidence
-Track ID
-Camera ID
-Timestamp
-
-```
-
----
-
-## Step 2 — Tracking
-
-ByteTrack maintains identities across frames.
-
-Example:
-
-```text
-Frame 30  → Person #7
-Frame 300 → Person #7
-
-```
-
-This enables accurate dwell-time calculations.
-
----
-
-## Step 3 — Cross-Camera ReID
-
-The system performs lightweight heuristic cross-camera identity stitching using appearance signatures, temporal constraints, and camera-aware matching.
-
-Example:
-
-```text
-CAM_ENTRY_01
-      ↓
-CAM_FLOOR_01
-      ↓
-CAM_BILLING_01
-
-VIS_GLOBAL_0016
-
-```
-
-This allows multi-camera visitor journey analytics.
-
----
-
-## Step 4 — Event Generation
-
-Each observation becomes a structured event.
-
-Example:
-
-```json
-{
-  "event_id":"uuid",
-  "visitor_id":"VIS_GLOBAL_0016",
-  "camera_id":"CAM_FLOOR_01",
-  "zone_id":"COSMETICS",
-  "event_type":"ZONE_ENTER",
-  "timestamp":"2026-03-03T14:01:21Z"
-}
-
-```
-
----
-
-# API Endpoints
-
-| Method | Endpoint | Description |
+| Component | Stack | Use Case |
 | --- | --- | --- |
-| GET | /health | System health and feed status |
-| POST | /events/ingest | Batch event ingestion |
-| GET | /stores/{id}/metrics | Visitor and conversion metrics |
-| GET | /stores/{id}/funnel | Entry → Purchase funnel |
-| GET | /stores/{id}/heatmap | Zone intensity analytics |
-| GET | /stores/{id}/anomalies | Operational anomalies |
-| GET | /cross-camera | Cross-camera stitched visitors |
-| GET | /real-pos | Revenue and POS analytics |
-| GET | /security | Security alerts and monitoring insights |
-| POST | /ask | AI Retail Copilot |
+| **Detection Pipeline** | Python, YOLOv8n, OpenCV | Heavy lifting, frame processing, tracking |
+| **Analytics API** | FastAPI, SQLite, Groq LLM | Fast querying, AI copilot, dashboard UI |
 
 ---
 
-# Example Analytics
+## 3. The Analytics Pipeline
 
-### Store Metrics
+### Step 1: Person Detection
+
+YOLOv8n processes the incoming camera streams frame by frame.
+*Output: Bounding Box, Confidence, Track ID, Camera ID, Timestamp*
+
+### Step 2: Temporal Tracking
+
+ByteTrack maintains persistent track identities across frames, enabling accurate dwell-time calculations within a single camera's view.
+
+### Step 3: Identity Stitching (Cross-Camera ReID)
+
+Normally, ReID requires heavy, GPU-intensive deep learning models (like OSNet). Our system performs lightweight cross-camera identity stitching to preserve CPU deployment feasibility using:
+
+1. Mean-color appearance signatures
+2. Euclidean distance thresholding
+3. Same-camera exclusion
+4. Lightweight camera-aware matching
+
+### Step 4: Event Generation
+
+The pipeline translates pixel tracking into a structured, business-readable JSON event output to `data/events.jsonl`.
+
+---
+
+## 4. API Endpoints & Features
+
+Once an event is generated, it flows into the backend architecture. To calculate conversion rates, the system merges video footfall with actual POS transaction data to automatically calculate Revenue, Top Brands, and Salespeople performance.
+
+### Core API Endpoints
+
+* **`GET /health`** - System health and STALE_FEED status
+* **`POST /events/ingest`** - Idempotent batch event ingestion
+* **`GET /stores/{id}/funnel`** - Entry → Purchase funnel metrics
+* **`GET /stores/{id}/anomalies`** - Operational anomalies
+* **`POST /ask`** - AI Retail Copilot
+
+### Anomalies & AI Copilot
+
+* **Anomaly Detection:** Continuously scans the event database to detect operational failures, such as `DEAD_ZONE` (0 footfall), `QUEUE_SPIKE`, and `CONVERSION_DROP`.
+* **AI Copilot:** Users can query the `/ask` endpoint using natural language (e.g., *"Why is conversion rate low?"*). Powered by Groq, with a deterministic rule-based fallback to ensure high availability.
+
+---
+
+## 5. Engineering Decisions
+
+* **Why YOLOv8n?** Chosen for its fast CPU inference and native ByteTrack support. It offers the best latency/accuracy tradeoff for edge deployments, performing efficiently on CPU-only hardware, including modern consumer laptops, without requiring bulky GPU rigs in the store.
+* **Why SQLite?** Zero setup, highly reliable, and perfectly suited for the deployment constraints of this challenge.
+* **Why Lightweight ReID?** Instead of heavy neural embeddings, the heuristic approach (mean-color signatures + distance thresholding + camera constraints) keeps the deployment CPU-friendly while still successfully enabling cross-camera tracking.
+
+---
+
+## 6. Building and Running
+
+### Option 1 — Docker (Recommended)
+
+```bash
+git clone <repo-url>
+cd store-intelligence
+docker compose up --build
+
+```
+
+This single command spins up the FastAPI backend, SQLite analytics layer, and Redpanda broker.
+*Health Check:* `curl http://localhost:8000/health`
+*Swagger Docs:* `http://localhost:8000/docs`
+
+### Option 2 — Manual Setup
+
+```bash
+# 1. Install Dependencies
+pip install fastapi uvicorn pydantic python-dotenv groq pandas numpy requests kafka-python ultralytics opencv-python pytest httpx
+
+# 2. Run Detection Pipeline
+python pipeline/detect.py
+
+# 3. Start API
+uvicorn app.main:app --reload
+
+```
+
+### Running Tests
+
+To ensure system stability, complement manual validation with automated testing:
+
+```bash
+python -m pytest tests/ -v
+
+```
+
+*Current status: 37 / 37 tests passing.* Coverage includes event schema validation, idempotency checks, edge cases, and anomaly detection.
+
+---
+
+## 7. Understanding the Output
+
+The system produces actionable intelligence:
+
+**Store Metrics:**
 
 ```json
 {
-  "unique_visitors":229,
-  "conversion_rate":0.0873,
-  "transactions":20
+  "unique_visitors": 229,
+  "conversion_rate": 0.0873,
+  "transactions": 20
 }
 
 ```
 
-### Funnel
+**Funnel Reconstruction:**
 
 ```text
 Entry           229
@@ -237,232 +184,52 @@ Purchase         20
 
 ```
 
-### POS Intelligence
-
-```text
-Revenue: ₹34,331.71
-
-Top Brand:
-Faces Canada
-
-Top Category:
-Makeup
-
-```
-
 ---
 
-# Running the Project
-
-## Option 1 — Docker (Recommended)
-
-Recommended setup:
-
-```bash
-git clone <repo-url>
-cd store-intelligence
-docker compose up --build
-
-```
-
-This starts:
-
-* FastAPI backend
-* SQLite analytics layer
-* Redpanda Kafka-compatible broker
-
-Verified locally using:
-
-```bash
-docker compose up --build
-
-```
-
-Health endpoint returns HTTP 200.
-
-Swagger Docs:
-
-```text
-http://localhost:8000/docs
-
-```
-
-Health Check:
-
-```bash
-curl http://localhost:8000/health
-
-```
-
-## Option 2 — Manual Setup
-
-### Install Dependencies
-
-```bash
-pip install \
-fastapi \
-uvicorn \
-pydantic \
-python-dotenv \
-groq \
-pandas \
-numpy \
-requests \
-kafka-python \
-ultralytics \
-opencv-python \
-pytest \
-httpx
-
-```
-
-### Run Detection Pipeline
-
-```bash
-python pipeline/detect.py
-
-```
-
-Output:
-
-```text
-data/events.jsonl
-
-```
-
----
-
-### Start API
-
-```bash
-uvicorn app.main:app --reload
-
-```
-
----
-
-### Open Dashboard
-
-```text
-dashboard/index.html
-
-```
-
----
-
-# Running Tests
-
-```bash
-python -m pytest tests/ -v
-
-```
-
-Current status:
-
-```text
-37 / 37 tests passing
-
-```
-
-Coverage includes:
-
-* Event schema validation
-* API correctness
-* Anomaly detection
-* Idempotency checks
-* Edge cases
-
----
-
-# Engineering Decisions
-
-### Why YOLOv8n?
-
-* Fast CPU inference
-* Native ByteTrack support
-* Best latency/accuracy tradeoff
-
-### Why SQLite?
-
-* Zero setup
-* Reliable
-* Challenge-friendly deployment
-
-### Why Lightweight ReID?
-
-Instead of heavy ReID models, the system uses:
-
-* appearance signatures
-* temporal constraints
-* camera-aware matching
-
-This keeps deployment CPU-friendly while still enabling cross-camera tracking.
-
----
-
-# Project Structure
+## 8. Project Structure
 
 ```text
 store-intelligence/
-├── docker-compose.yml     # Docker orchestration
+├── docker-compose.yml     # Docker orchestration (Starts API, DB, Redpanda)
 ├── requirements.txt       # Python dependencies
-├── README.md              # Documentation
-├── app/
-│   ├── main.py
-│   └── database.py
+├── README.md              # This documentation
 │
-├── pipeline/
+├── app/                   # Backend API (FastAPI)
+│   ├── main.py            # API Endpoints & Routes
+│   └── database.py        # SQLite connections and schemas
+│
+├── pipeline/              # Computer Vision Layer
 │   ├── detect.py          # Main pipeline orchestrator
-│   ├── detector.py        # YOLOv8 detection + ByteTrack
+│   ├── detector.py        # YOLOv8n detection + ByteTrack
 │   ├── reid.py            # Cross-camera visitor stitching
 │   ├── emit.py            # Event schema generation
 │   ├── ingest_events.py   # Event ingestion utility
-│   ├── pos_insights.py    # POS analytics
-│   ├── real_pos.py        # Revenue & sales insights
-│   ├── security_monitor.py
-│   ├── producer.py
-│   └── zones.py
+│   └── real_pos.py        # Revenue & POS insights
 │
-├── data/
-│   ├── CCTV videos
-│   ├── store_layout.json
-│   ├── events.jsonl
-│   └── POS transactions
+├── data/                  # Inputs/Outputs
+│   ├── CCTV videos        # Raw mp4 inputs
+│   ├── store_layout.json  # Zone definitions
+│   ├── events.jsonl       # Pipeline output
+│   └── pos_transactions   # POS correlation data
 │
-├── tests/
+├── tests/                 # Comprehensive Pytest Suite
 │   ├── test_pipeline.py
 │   ├── test_metrics.py
 │   └── test_anomalies.py
 │
-├── docs/
+├── docs/                  # Architecture info
 │   ├── DESIGN.md
 │   └── CHOICES.md
 │
-├── dashboard/
-│   ├── index.html         # Store analytics dashboard
-│   ├── app.js             # Frontend API integration
-│   └── styles.css         # Dashboard styling
+└── dashboard/             # Frontend UI
+    ├── index.html         # Analytics UI
+    └── app.js             # UI logic and API fetching
 
 ```
 
 ---
 
-# Future Improvements
-
-* OSNet / TorchReID appearance embeddings
-* Multi-store deployment
-* Real-time RTSP camera ingestion
-* TimescaleDB production backend
-* Predictive conversion analytics
-* Demand forecasting / staffing recommendations
-
----
-
-# Author
-
-Garv Gupta
-
-Purplle Tech Challenge 2026 Submission
+*Author: Garv Gupta | Purplle Tech Challenge 2026 Submission*
 
 ```
 
