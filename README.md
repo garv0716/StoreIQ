@@ -162,6 +162,16 @@ uvicorn app.main:app --reload
 
 ```
 
+### Environment Setup
+
+Create a `.env` file in the project root:
+
+```env
+GROQ_API_KEY=your_groq_api_key_here
+```
+
+The AI Retail Copilot uses Groq for natural-language analytics. If the API key is not configured, AI responses may be unavailable and fallback behavior will be used where supported.
+
 ### Running Tests
 
 To ensure system stability, complement manual validation with automated testing:
