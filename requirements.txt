@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+pydantic
+python-dotenv
+groq
+pandas
+numpy
+requests
+kafka-python
+ultralytics
+opencv-python
+pytest
+httpx
