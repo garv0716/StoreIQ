@@ -1,4 +1,4 @@
-```md
+
 # Store Intelligence System - Retail Analytics Platform
 
 AI-powered retail analytics platform that converts CCTV footage into actionable business intelligence.
