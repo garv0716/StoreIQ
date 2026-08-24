@@ -1,11 +1,10 @@
 
-# StoreIQ - Retail Analytics Platform
+# StoreIQ - Retail Analytics Platform.
 
 AI-powered retail analytics platform that converts CCTV footage into actionable business intelligence.
 
-Built for **Purplle Tech Challenge 2026 — Round 2**
 
----
+----
 
 ## Table of Contents
 
@@ -18,7 +17,7 @@ Built for **Purplle Tech Challenge 2026 — Round 2**
 7. [Understanding the Output](#7-understanding-the-output)
 8. [Project Structure](#8-project-structure)
 
----
+----
 
 # Store Intelligence
 
@@ -274,7 +273,7 @@ store-intelligence/
 
 ---
 
-*Author: Garv Gupta | Purplle Tech Challenge 2026 Submission*
+*Author: Garv Gupta *
 
 ```
 
