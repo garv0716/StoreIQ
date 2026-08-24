@@ -273,7 +273,7 @@ store-intelligence/
 
 ---
 
-*Author: Garv Gupta *
+Author: Garv Gupta 
 
 ```
 
