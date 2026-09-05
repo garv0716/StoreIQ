@@ -215,7 +215,49 @@ Purchase         20
 
 ## 8. Project Structure
 
-
+```text
+store-intelligence/
+│
+├── app/
+│   ├── __init__.py
+│   ├── main.py
+│   └── database.py
+│
+├── pipeline/
+│   ├── __init__.py
+│   ├── detect.py
+│   ├── detector.py
+│   ├── reid.py
+│   ├── emit.py
+│   ├── ingest_events.py
+│   ├── producer.py
+│   ├── pos_insights.py
+│   ├── real_pos.py
+│   ├── security_monitor.py
+│   ├── zones.py
+│   └── run.sh
+│
+├── data/
+│   ├── Brigade_Bangalore_10_April_26.mp4
+│   ├── store_layout.json
+│   ├── pos_transactions.csv
+│   └── events.jsonl
+│
+├── docs/
+│   ├── DESIGN.md
+│   └── CHOICES.md
+│
+├── tests/
+│   ├── test_pipeline.py
+│   ├── test_metrics.py
+│   └── test_anomalies.py
+│
+├── app.js
+├── docker-compose.yml
+├── index.html
+├── README.md
+├── requirements.txt
+└── style.css
 
 ```
 
