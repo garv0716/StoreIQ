@@ -19,16 +19,6 @@ AI-powered retail analytics platform that converts CCTV footage into actionable 
 
 ----
 
-# Store Intelligence
-
-## Live Demo
-
-### Frontend
-https://garv0716.github.io/store-intelligence/
-
-### Backend API
-https://store-intelligence-q9yn.onrender.com/docs
-
 
 
 ## 1. What is Store Intelligence?
