@@ -1,5 +1,5 @@
 
-# StoreIQ - Retail Analytics Platform.
+# StoreIQ - Retail Analytics Platform.(Purple hiring challange)
 
 AI-powered retail analytics platform that converts CCTV footage into actionable business intelligence.
 
