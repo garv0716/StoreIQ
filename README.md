@@ -19,7 +19,7 @@ AI-powered retail analytics platform that converts CCTV footage into actionable 
 
 ----
 
-## live link
+
 
 
 
