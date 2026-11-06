@@ -1,10 +1,10 @@
 
-# StoreIQ || Retail Analytics Platform
+# StoreIQ || Retail Analytics Webapp
 
 AI-powered retail analytics platform that converts CCTV footage into actionable business intelligence.
 
 
-----
+-------
 
 ## Table of Contents
 
